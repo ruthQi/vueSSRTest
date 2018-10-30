@@ -1,8 +1,10 @@
 //只用于服务端渲染
 import { createApp } from './app';
+const isDev = process.env.NODE_ENV !== 'production'
+
 export default context => {
    return new Promise((resolve, reject)=>{
-      const { app, router } = createApp();
+      const { app, router, store } = createApp();
 
       router.push(context.url);
       router.onReady(()=>{
@@ -10,9 +12,13 @@ export default context => {
          if(!matchedComponents.length){
             return reject({code: 404})
          }
-         resolve(app);
+         Promise.all(matchedComponents.map(({ asyncData }) => asyncData && asyncData({
+            store,
+            route: router.currentRoute
+         }))).then(() => {
+            context.state = store.state;
+            resolve(app)
+         }).catch(reject)
       }, reject)
    })
-   
-   return app;
 }
