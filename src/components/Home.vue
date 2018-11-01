@@ -7,9 +7,9 @@
 <script>
 export default {
    name: 'Home',
-   created() {
-      console.log('0000000000000')
-      this.$store.dispatch('incrementHome')
+   asyncData ({ store, route }) {
+      // 触发 action 后，会返回 Promise
+      return store.dispatch('incrementHome')
    },
    computed:{
       num(){
