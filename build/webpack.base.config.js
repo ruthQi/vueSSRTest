@@ -7,6 +7,7 @@ const { VueLoaderPlugin } = require('vue-loader')
 const isProd = process.env.NODE_ENV === 'production'
 
 module.exports = {
+   mode: isProd ? 'production' : 'development',
    devtool: isProd
       ? false
       : '#cheap-module-source-map',
@@ -16,21 +17,22 @@ module.exports = {
       filename: '[name].[chunkhash].js'
    },
    resolve: {
-      alias: {
-         'public': path.resolve(__dirname, '../public')
-      }
+      extensions: ['.js', '.vue', '.scss'],
    },
    module: {
-      noParse: /es6-promise\.js$/, // avoid webpack shimming process
       rules: [
          {
             test: /\.vue$/,
             loader: 'vue-loader',
-            options: {
-               compilerOptions: {
-                  preserveWhitespace: false
-               }
-            }
+            // options: {
+            //    loaders:{
+            //       less: [
+            //          'vue-style-loader',
+            //          'css-loader',
+            //          'less-loader'
+            //       ]
+            //    }
+            // }
          },
          {
             test: /\.js$/,
@@ -46,19 +48,12 @@ module.exports = {
             }
          },
          {
-            test: /\.styl(us)?$/,
-            use: isProd
-               ? ExtractTextPlugin.extract({
-                  use: [
-                     {
-                        loader: 'css-loader',
-                        options: { minimize: true }
-                     },
-                     'stylus-loader'
-                  ],
-                  fallback: 'vue-style-loader'
-               })
-               : ['vue-style-loader', 'css-loader', 'stylus-loader']
+            test: /\.less?$/,
+            use: [
+               'vue-style-loader',
+               'css-loader',
+               'less-loader'
+            ]
          },
       ]
    },

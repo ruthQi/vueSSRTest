@@ -1,5 +1,5 @@
 //只用于客户端渲染
-import {createApp} from './app';
+import {createApp} from './app.js';
 const { app, router, store } = createApp();
 import Vue from 'vue';
 
